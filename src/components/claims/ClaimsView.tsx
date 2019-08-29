@@ -50,7 +50,7 @@ export default class ClaimsView extends React.Component<Props, State> {
 
     parseToken(token: any) {
         var claimData = Object.keys(token).filter(y => y !== "decodedIdToken" && y !== "rawIdToken").map(x => {
-            return new Claim(x, token[x].toString());
+            return new Claim(x, Array.isArray(token[x]) ? token[x].join() : token[x].toString());
         });
         this.setState({ claims: claimData });
     }
