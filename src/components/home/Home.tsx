@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
 import { LinkContainer } from 'react-router-bootstrap';
 import Row from "react-bootstrap/Row";
-import { Button, Collapse } from "react-bootstrap";
+import { Button, Collapse, CardGroup } from "react-bootstrap";
 
 interface State {
     open: boolean;
@@ -31,7 +31,7 @@ export default class Home extends React.Component<State> {
                 </Row>
                 <Collapse in={this.state.open}>
                     <Row>
-                        <CardDeck>
+                        <CardGroup>
                             <Card>
                                 <Card.Body>
                                     <Card.Title>Microsoft Graph</Card.Title>
@@ -152,7 +152,7 @@ export default class Home extends React.Component<State> {
                                     <small className="text-muted">Served by Azure AD</small>
                                 </Card.Footer>
                             </Card>
-                        </CardDeck>
+                        </CardGroup>
                     </Row >
                 </Collapse>
             </>

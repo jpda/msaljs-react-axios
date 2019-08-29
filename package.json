@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && az storage blob delete-batch -s '$web' --account-name remoteutils --pattern '*' && az storage blob upload-batch -s '/home/jpd/code/remote-util/build/' -d \\$web --account-name remoteutils --output none",
+    "build": "react-scripts build && az storage blob delete-batch -s '$web' --account-name msaljs --pattern '*' && az storage blob upload-batch -s '/home/jpd/code/msaljs-sample/build/' -d \\$web --account-name msaljs --output none",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

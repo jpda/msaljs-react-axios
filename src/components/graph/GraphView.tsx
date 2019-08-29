@@ -4,6 +4,7 @@ import Row from "react-bootstrap/Row";
 import AuthService from "../auth/AuthService";
 import { AuthResponse, AuthenticationParameters } from "msal";
 import { IKvp, Kvp } from "../../models/KvpModel";
+import { Card, CardDeck } from "react-bootstrap";
 
 interface Props {
     auth: AuthService
@@ -22,6 +23,7 @@ export class GraphView extends React.Component<Props, State> {
         super(props);
         this.auth = props.auth;
         this.state = { userInfo: [] };
+        // here we set the scopes we'll need to request from the user
         this.scopeConfiguration = { scopes: ["https://graph.microsoft.com/User.Read"] };
         this.state.userInfo.push(new Kvp("loading...", "loading..."));
     }
@@ -87,6 +89,46 @@ export class GraphView extends React.Component<Props, State> {
     render() {
         return (
             <>
+                <Row>
+                    <CardDeck style={{ width: '100%' }}>
+                        <Card>
+                        <Card.Header as="h5">Single scope, statically assigned</Card.Header>
+                            <Card.Body>
+                                <p>In this example, the requested scopes are assigned in the application registration, before the application
+                                    ever runs. This is an administrative Azure AD activity, where the owner of the app registration
+                                    determines which scopes/permissions are required and enables the application to request them.
+                                    This is how Azure AD v1 resource permissions were handled.
+                                </p>
+                                <CardDeck style={{ width: '100%' }}>
+                                    <Card>
+                                        <Card.Body>
+                                            <Card.Title>API/Service</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">Microsoft Graph</Card.Subtitle>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card>
+                                        <Card.Body>
+                                            <Card.Title>Permission</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">User.Read</Card.Subtitle>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card >
+                                        <Card.Body>
+                                            <Card.Title>Scope</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted"><code>https://graph.microsoft.com/User.Read</code></Card.Subtitle>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card >
+                                        <Card.Body>
+                                            <Card.Title>Assignment</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">Static</Card.Subtitle>
+                                        </Card.Body>
+                                    </Card>
+                                </CardDeck>
+                            </Card.Body>
+                        </Card>
+                    </CardDeck>
+                </Row>
                 <Row>
                     <h2>Graph data for /me</h2>
                 </Row>
