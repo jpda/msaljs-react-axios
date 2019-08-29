@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json.schemastore.org/proxies",
+    "proxies": {
+        "api": {
+            "matchCondition": {
+                "route": "/api/{*url}"
+            },
+            "backendUri": "https://localhost/api/{url}"
+        },
+        "SpaAssetsProxy":{
+            "matchCondition": {
+                "methods": [
+                    "GET"
+                ],
+                "route": "/{*restOfPath}"
+            },
+            "debug": false,
+            "backendUri": "https://remoteutils.z13.web.core.windows.net/{restOfPath}"
+        }
+    }
+}
