@@ -7,13 +7,13 @@ import { AuthResponse, AuthenticationParameters } from "msal";
 import { CardDeck, Card } from "react-bootstrap";
 
 interface Props {
-    endpoint: any
-    devices: IDevice[]
-    auth: AuthService
+    endpoint: any;
+    auth: AuthService;
+    toastToggle: any;
 }
 
 interface State {
-    devices: IDevice[]
+    devices: IDevice[];
 }
 
 export class PowerView extends React.Component<Props, State> {
@@ -24,52 +24,62 @@ export class PowerView extends React.Component<Props, State> {
 
     constructor(props: Props, state: State) {
         super(props);
-        this.state = props;
         this.url = props.endpoint;
         this.auth = props.auth;
-        if (props == null || props.devices == null) {
-            this.state = { devices: [] };
-        }
+        this.state = { devices: [new Device("loading...", "loading...", "loading...", new DeviceState(0, 0))] };
+        
+        // here we set the scopes we'll need to request from the user for this view
         this.scopeConfiguration = { scopes: ["api://remote.jpda.app/power", "api://remote.jpda.app/wake"] };
-        this.state.devices.push(new Device("loading...", "loading...", "loading...", new DeviceState(0, 0)));
     }
 
     componentDidMount() {
-        this.handleData();
-    }
-
-    handleData() {
-        if (this.auth.msalObj.getAccount()) {
-            this.auth.msalObj.acquireTokenSilent(this.scopeConfiguration).then(token => { this.fetchData(token) }).catch(e => { this.tokenError(e) });
+        if (this.auth.msalObj.getAccount()) { // account is available, so we're signed in
+            this.auth.msalObj.acquireTokenSilent(this.scopeConfiguration)
+                .then(t => this.fetchData(t))
+                .catch(e => this.tokenError(e));
         } else {
-            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration).then(token => { this.fetchData(token) }).catch(e => { this.tokenError(e) });
+            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration)
+                .then(t => this.fetchData(t))
+                .catch(e => this.tokenError(e));
         }
     }
 
     tokenError(e: any) {
         console.error(e);
         console.error(e.errorCode);
-        if (e.errorCode === "user_login_error") {
-            this.auth.msalObj.loginPopup(this.scopeConfiguration).then(token => { this.idTokenCallback(token) });
+        if (e.errorCode === "user_login_error") { // e.g., the user hasn't logged in yet, so we need to log them in
+            this.auth.msalObj.loginPopup(this.scopeConfiguration)
+                .then(response => { // don't really need the response here, but if you wanted an id_token for some reason it would be available
+                    this.auth.msalObj.acquireTokenSilent(this.scopeConfiguration)
+                        .then(t => this.fetchData(t))
+                        .catch(e => this.tokenError(e));
+                })
+                .catch(e => this.handleFatalError(e)); // some other error that we can't handle
         }
-        if (this.auth.requiresInteraction(e.errorCode)) {
-            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration).then(this.fetchData);
+        if (this.auth.requiresInteraction(e.errorCode)) { // this usually means the user needs to consent or use MFA - things that require an interactive login
+            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration)
+                .then(t => this.fetchData(t))
+                .catch(e => this.handleFatalError(e));
         }
     }
 
-    idTokenCallback(token: AuthResponse) {
-        this.auth.msalObj.acquireTokenSilent(this.scopeConfiguration).then(token => { this.fetchData(token) }).catch(e => { this.tokenError(e) });
+    handleFatalError(e: any) {
+        console.error(e.errorCode);
+        this.props.toastToggle(true, e.errorCode);
+        this.setState({ devices: [new Device("Something went wrong", e.errorCode, "", new DeviceState(0, 0))] });
     }
 
     fetchData(token: AuthResponse) {
-        if (!token) { console.warn("AuthResponse null"); return; };
-        console.log(token.tokenType);
+        if (!token) {
+            this.handleFatalError({ errorCode: "no_token" });
+            return;
+        };
 
         if (token.tokenType !== "access_token" || token.accessToken === null) {
-            console.warn("got wrong token type");
+            this.handleFatalError({ errorCode: "wrong_token_type" });
         }
 
-        console.log("powerview: got access token: " + token.accessToken.substr(0, 10) + "...");
+        console.debug("powerview: got access token: " + token.accessToken.substr(0, 10) + "...");
         fetch(this.url + "/power",
             {
                 headers: new Headers({
@@ -102,19 +112,19 @@ export class PowerView extends React.Component<Props, State> {
                                     <Card>
                                         <Card.Body>
                                             <Card.Title>API/Service</Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted">Your API (sample placeholder) <code>api://remote.jpda.app</code></Card.Subtitle>
+                                            <Card.Subtitle className="mb-2 text-muted">Your API (sample placeholder) <br/><code>api://remote.jpda.app</code></Card.Subtitle>
                                         </Card.Body>
                                     </Card>
                                     <Card>
                                         <Card.Body>
                                             <Card.Title>Permission</Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted">wol<br/>power</Card.Subtitle>
+                                            <Card.Subtitle className="mb-2 text-muted">wol<br />power</Card.Subtitle>
                                         </Card.Body>
                                     </Card>
                                     <Card >
                                         <Card.Body>
                                             <Card.Title>Scope</Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted"><code>api://remote.jpda.app/wol</code><br/><code>api://remote.jpda.app/power</code></Card.Subtitle>
+                                            <Card.Subtitle className="mb-2 text-muted"><code>api://remote.jpda.app/wol</code><br /><code>api://remote.jpda.app/power</code></Card.Subtitle>
                                         </Card.Body>
                                     </Card>
                                     <Card >

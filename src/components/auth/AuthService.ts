@@ -32,32 +32,6 @@ export default class AuthService {
         //     });
     }
 
-    // public async acquireTokenSilentThenPopup(): Promise<AuthResponse | null> {
-    //     if (this.msalObj.getAccount()) {
-    //         return this.msalObj.acquireTokenSilent(this.data.requestConfig).then(tokenResponse => {
-    //             return tokenResponse;
-    //         }).catch(
-    //             e => {
-    //                 console.error(e);
-    //                 console.error(e.errorCode);
-    //                 if (e.errorCode === "user_login_error") {
-    //                     this.login();
-    //                 }
-    //                 if (this.requiresInteraction(e.errorCode)) {
-    //                     console.warn("requires interactive login");
-    //                     this.msalObj.acquireTokenPopup(this.data.requestConfig).then(response => {
-    //                         return response;
-    //                     });
-    //                 }
-    //                 return null;
-    //             }
-    //         );
-    //     } else {
-    //         this.login();
-    //     }
-    //     return null;
-    // }
-
     public requiresInteraction(errorCode: string): boolean {
         console.error(errorCode);
         if (!errorCode || !errorCode.length) {
