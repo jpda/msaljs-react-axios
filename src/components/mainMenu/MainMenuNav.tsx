@@ -7,28 +7,22 @@ import AuthService from "../auth/AuthService";
 
 interface Props {
   AuthService: AuthService;
-}
-
-interface State {
   userName: string;
+  authenticationStateChanged: any;
 }
 
-export default class MainMenuNav extends React.Component<Props, State> {
+export default class MainMenuNav extends React.Component<Props> {
   auth: AuthService;
   constructor(p: Props) {
     super(p);
     this.auth = p.AuthService;
-
-    if (this.auth.msalObj.getAccount()) {
-      this.state = { userName: this.auth.msalObj.getAccount().userName };
-    }
+    this.state = { userName: p.userName };
   }
 
-  login(e: any) {
-    e.preventDefault();
+  login() {
     this.auth.login().then(x => {
       if (x) {
-        this.setState({ userName: x.userName });
+        this.props.authenticationStateChanged();
       }
     });
   }
@@ -49,6 +43,7 @@ export default class MainMenuNav extends React.Component<Props, State> {
             <Nav className="mr-auto">
               <Nav.Link as={NavLink} to="/" exact>Home</Nav.Link>
               <Nav.Link as={NavLink} to="/graph" exact>Graph</Nav.Link>
+              <Nav.Link as={NavLink} to="/calendar" exact>Calendar</Nav.Link>
               <Nav.Link as={NavLink} to="/power" exact>Your API</Nav.Link>
               <Nav.Link as={NavLink} to="/groups" exact>Groups</Nav.Link>
               <Nav.Link as={NavLink} to="/approles" exact>AppRoles</Nav.Link>
@@ -57,11 +52,11 @@ export default class MainMenuNav extends React.Component<Props, State> {
             <Navbar.Collapse className="justify-content-end">
               <Nav className="justify-content-end" style={{ width: "100%" }}>
                 {(() => {
-                  if (this.state === null || this.state.userName === null) {
+                  if (this.props.userName === "") {
                     return <button className="btn btn-primary" onClick={this.login.bind(this)}>Log in</button>
                   } else {
                     return <Navbar.Text>
-                      <button className="btn btn-primary" onClick={this.logout.bind(this)}>Log out {this.state.userName}</button>
+                      <button className="btn btn-primary" onClick={this.logout.bind(this)}>Log out {this.props.userName}</button>
                     </Navbar.Text>
                   }
                 })()}

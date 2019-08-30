@@ -13,10 +13,12 @@ interface Props {
 }
 
 interface State {
-    userInfo: IKvp[]
+    userInfo: IKvp[];
+    startDate: string;
+    endDate: string;
 }
 
-export class GraphView extends React.Component<Props, State> {
+export class CalendarView extends React.Component<Props, State> {
     state: State;
     auth: AuthService;
     scopeConfiguration: AuthenticationParameters;
@@ -24,10 +26,12 @@ export class GraphView extends React.Component<Props, State> {
     constructor(props: Props, state: State) {
         super(props, state);
         this.auth = props.auth;
-        this.state = { userInfo: [new Kvp("loading...", "loading...")] };
+        var now = new Date().toISOString();
+        var weekFromNow = this.addDays(new Date(), 7).toISOString();
+        this.state = { userInfo: [new Kvp("loading...", "loading...")], startDate: now, endDate: weekFromNow };
 
         // here we set the scopes we'll need to request from the user for this view
-        this.scopeConfiguration = { scopes: ["https://graph.microsoft.com/User.Read"] };
+        this.scopeConfiguration = { scopes: ["https://graph.microsoft.com/Calendars.Read"] };
     }
 
     componentDidMount() {
@@ -78,8 +82,11 @@ export class GraphView extends React.Component<Props, State> {
             this.handleFatalError({ errorCode: "wrong_token_type" });
         }
 
-        console.debug("graphview: got access token: " + token.accessToken.substr(0, 10) + "...");
-        fetch("https://graph.microsoft.com/v1.0/me",
+        console.debug("calendarview: got access token: " + token.accessToken.substr(0, 10) + "...");
+
+        var url = "https://graph.microsoft.com/v1.0/me/calendarview?startdatetime=" + this.state.startDate + "&enddatetime=" + this.state.endDate;
+        console.info(url);
+        fetch(url,
             {
                 headers: new Headers({
                     "Authorization": "Bearer " + token.accessToken
@@ -96,11 +103,18 @@ export class GraphView extends React.Component<Props, State> {
         if (data === null) {
             this.handleFatalError({ errorCode: "no_graph_response" });
         };
-        console.debug(data);
-        var userData = Object.keys(data).filter(x => data[x] != null).map(x => {
-            return new Kvp(x, Array.isArray(data[x]) ? data[x].join() : data[x].toString());
-        });
-        this.setState({ userInfo: userData });
+        var calData = [];
+        for (var i = 0; i < data.value.length; i++) {
+            calData.push(new Kvp(data.value[i].subject, data.value[i].start.dateTime));
+        }
+
+        this.setState({ userInfo: calData });
+    }
+
+    addDays(date: Date, days: number): Date {
+        var result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
     }
 
     render() {
@@ -147,7 +161,7 @@ export class GraphView extends React.Component<Props, State> {
                     </CardDeck>
                 </Row>
                 <Row>
-                    <h2>Microsoft Graph data for /me</h2>
+                    <h2>Microsoft Graph data for /me/calendarview between {this.state.startDate} and {this.state.endDate}</h2>
                 </Row>
                 <Row>
                     <Table bordered striped>

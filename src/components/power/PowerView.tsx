@@ -10,6 +10,7 @@ interface Props {
     endpoint: any;
     auth: AuthService;
     toastToggle: any;
+    authenticationStateChanged: any;
 }
 
 interface State {
@@ -27,7 +28,7 @@ export class PowerView extends React.Component<Props, State> {
         this.url = props.endpoint;
         this.auth = props.auth;
         this.state = { devices: [new Device("loading...", "loading...", "loading...", new DeviceState(0, 0))] };
-        
+
         // here we set the scopes we'll need to request from the user for this view
         this.scopeConfiguration = { scopes: ["api://remote.jpda.app/power", "api://remote.jpda.app/wake"] };
     }
@@ -50,6 +51,7 @@ export class PowerView extends React.Component<Props, State> {
         if (e.errorCode === "user_login_error") { // e.g., the user hasn't logged in yet, so we need to log them in
             this.auth.msalObj.loginPopup(this.scopeConfiguration)
                 .then(response => { // don't really need the response here, but if you wanted an id_token for some reason it would be available
+                    this.props.authenticationStateChanged(); // notify our upstream components that we've authenticated to update other UI
                     this.auth.msalObj.acquireTokenSilent(this.scopeConfiguration)
                         .then(t => this.fetchData(t))
                         .catch(e => this.tokenError(e));
@@ -112,7 +114,7 @@ export class PowerView extends React.Component<Props, State> {
                                     <Card>
                                         <Card.Body>
                                             <Card.Title>API/Service</Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted">Your API (sample placeholder) <br/><code>api://remote.jpda.app</code></Card.Subtitle>
+                                            <Card.Subtitle className="mb-2 text-muted">Your API (sample placeholder) <br /><code>api://remote.jpda.app</code></Card.Subtitle>
                                         </Card.Body>
                                     </Card>
                                     <Card>

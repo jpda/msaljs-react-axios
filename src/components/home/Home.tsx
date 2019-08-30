@@ -33,16 +33,20 @@ export default class Home extends React.Component<State> {
                         <CardGroup>
                             <Card>
                                 <Card.Body>
-                                    <Card.Title>Microsoft Graph (Static)</Card.Title>
+                                    <Card.Title>Microsoft Graph</Card.Title>
                                     <Card.Subtitle className="mb-2 text-muted">For viewing user data</Card.Subtitle>
                                     <Card.Text>
                                         View basic user data from the Graph. Uses the Graph <code>User.Read</code> scope,
-                                        which is pre-configured in the app registration, called <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-permissions-and-consent#types-of-consent" target="_blank" rel="noopener noreferrer">Static</a> consent.
+                                        which is pre-configured in the app registration, called <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-permissions-and-consent#types-of-consent" target="_blank" rel="noopener noreferrer">Static</a> consent. 
+                                        The <code>Calendar.Read</code> scope is incrementally added.
                                     </Card.Text>
                                 </Card.Body>
                                 <Card.Body>
                                     <LinkContainer to="/graph">
                                         <Card.Link>See my basic Graph user object</Card.Link>
+                                    </LinkContainer>
+                                    <LinkContainer to="/calendar">
+                                        <Card.Link>Incrementally check my calendar</Card.Link>
                                     </LinkContainer>
                                 </Card.Body>
                                 <Card.Footer>
