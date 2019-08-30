@@ -77,11 +77,9 @@ class App extends Component<any, State> {
             <Switch>
               <Route path="/graph" render={(props) => <GraphView {...props} auth={this.auth} toastToggle={this.toastHandler} />} />
               <Route path="/power" render={(props) => <PowerView {...props} devices={[]} endpoint={this.endpoint} auth={this.auth} />} />
-              <Route path="/static" render={(props) => <GraphView {...props} auth={this.auth} toastToggle={this.toastHandler} />} />
-              <Route path="/jit" render={(props) => <ClaimsView {...props} auth={this.auth} />} />
-              <Route path="/incremental" render={(props) => <ClaimsView {...props} auth={this.auth} />} />
-              <Route path="/groups" render={(props) => <ClaimsView {...props} auth={this.auth} />} />
-              <Route path="/approles" render={(props) => <ClaimsView {...props} auth={this.auth} />} />
+              <Route path="/groups" render={(props) => <ClaimsView {...props} auth={this.auth} toastToggle={this.toastHandler} />} />
+              <Route path="/approles" render={(props) => <ClaimsView {...props} auth={this.auth} toastToggle={this.toastHandler} />} />
+              <Route path="/claims" render={(props) => <ClaimsView {...props} auth={this.auth} toastToggle={this.toastHandler} />} />
             </Switch>
           </Container>
         </div>

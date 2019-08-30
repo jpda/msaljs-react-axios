@@ -5,7 +5,8 @@ import Row from "react-bootstrap/Row";
 import AuthService from "../auth/AuthService";
 
 interface Props {
-    auth: AuthService
+    auth: AuthService;
+    toastToggle: any;
 }
 
 interface State {
@@ -50,7 +51,7 @@ export default class ClaimsView extends React.Component<Props, State> {
 
     parseToken(token: any) {
         var claimData = Object.keys(token).filter(y => y !== "decodedIdToken" && y !== "rawIdToken").map(x => {
-            return new Claim(x, Array.isArray(token[x]) ? token[x].join() : token[x].toString());
+            return new Claim(x, Array.isArray(token[x]) ? token[x].join(",") : token[x].toString());
         });
         this.setState({ claims: claimData });
     }

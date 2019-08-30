@@ -42,7 +42,7 @@ export default class Home extends React.Component<State> {
                                 </Card.Body>
                                 <Card.Body>
                                     <LinkContainer to="/graph">
-                                        <Card.Link>Me</Card.Link>
+                                        <Card.Link>See my basic Graph user object</Card.Link>
                                     </LinkContainer>
                                 </Card.Body>
                                 <Card.Footer>
@@ -59,7 +59,7 @@ export default class Home extends React.Component<State> {
                                 </Card.Body>
                                 <Card.Body>
                                     <LinkContainer to="/power">
-                                        <Card.Link>Your API</Card.Link>
+                                        <Card.Link>Call your API</Card.Link>
                                     </LinkContainer>
                                 </Card.Body>
                                 <Card.Footer>
@@ -76,7 +76,7 @@ export default class Home extends React.Component<State> {
                                 </Card.Body>
                                 <Card.Body>
                                     <LinkContainer to="/groups">
-                                        <Card.Link>Groups</Card.Link>
+                                        <Card.Link>See my groups</Card.Link>
                                     </LinkContainer>
                                 </Card.Body>
                                 <Card.Footer>
@@ -93,7 +93,7 @@ export default class Home extends React.Component<State> {
                                 </Card.Body>
                                 <Card.Body>
                                     <LinkContainer to="/approles">
-                                        <Card.Link>Dynamic scopes</Card.Link>
+                                        <Card.Link>See my AppRoles</Card.Link>
                                     </LinkContainer>
                                 </Card.Body>
                                 <Card.Footer>
@@ -108,7 +108,7 @@ export default class Home extends React.Component<State> {
                                 </Card.Body>
                                 <Card.Body>
                                     <LinkContainer to="/claims">
-                                        <Card.Link>Claims</Card.Link>
+                                        <Card.Link>See my claims</Card.Link>
                                     </LinkContainer>
                                 </Card.Body>
                                 <Card.Footer>

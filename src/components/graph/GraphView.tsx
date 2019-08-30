@@ -13,8 +13,6 @@ interface Props {
 
 interface State {
     userInfo: IKvp[]
-    authToastOpen: boolean;
-    message: string;
 }
 
 export class GraphView extends React.Component<Props, State> {
@@ -25,7 +23,7 @@ export class GraphView extends React.Component<Props, State> {
     constructor(props: Props, state: State) {
         super(props, state);
         this.auth = props.auth;
-        this.state = { userInfo: [], authToastOpen: false, message: "" };
+        this.state = { userInfo: [] };
         // here we set the scopes we'll need to request from the user
         this.scopeConfiguration = { scopes: ["https://graph.microsoft.com/User.Read"] };
         this.state.userInfo.push(new Kvp("loading...", "loading..."));
@@ -44,7 +42,7 @@ export class GraphView extends React.Component<Props, State> {
     }
 
     showError(e: any) {
-        this.props.toastToggle(true, e);
+        this.props.toastToggle(true, e.errorCode);
     }
 
     tokenError(e: any) {
@@ -64,13 +62,13 @@ export class GraphView extends React.Component<Props, State> {
 
     fetchData(token: AuthResponse) {
         if (!token) { console.warn("AuthResponse null"); return; };
-        console.log(token.tokenType);
+        console.debug(token.tokenType);
 
         if (token.tokenType !== "access_token" || token.accessToken === null) {
             console.warn("got wrong token type");
         }
 
-        console.log("graphview: got access token: " + token.accessToken.substr(0, 10) + "...");
+        console.debug("graphview: got access token: " + token.accessToken.substr(0, 10) + "...");
         fetch("https://graph.microsoft.com/v1.0/me",
             {
                 headers: new Headers({
@@ -86,7 +84,7 @@ export class GraphView extends React.Component<Props, State> {
 
     parseGraphResponse(data: any) {
         if (data === null) return;
-        console.log(data);
+        console.debug(data);
         var userData = Object.keys(data).filter(x => data[x] != null).map(x => {
             return new Kvp(x, Array.isArray(data[x]) ? data[x].join() : data[x].toString());
         });

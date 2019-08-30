@@ -50,11 +50,8 @@ export default class MainMenuNav extends React.Component<Props, State> {
               <Nav.Link as={NavLink} to="/" exact>Home</Nav.Link>
               <Nav.Link as={NavLink} to="/graph" exact>Graph</Nav.Link>
               <Nav.Link as={NavLink} to="/power" exact>Your API</Nav.Link>
-              <Nav.Link as={NavLink} to="/graph" exact>Static</Nav.Link>
-              <Nav.Link as={NavLink} to="/jit" exact>JIT scopes</Nav.Link>
-              <Nav.Link as={NavLink} to="/inc" exact>Incrementals</Nav.Link>
               <Nav.Link as={NavLink} to="/groups" exact>Groups</Nav.Link>
-              <Nav.Link as={NavLink} to="/approles" exact>Approles w/ user</Nav.Link>
+              <Nav.Link as={NavLink} to="/approles" exact>AppRoles</Nav.Link>
               <Nav.Link as={NavLink} to="/claims" exact>Claims</Nav.Link>
             </Nav>
             <Navbar.Collapse className="justify-content-end">

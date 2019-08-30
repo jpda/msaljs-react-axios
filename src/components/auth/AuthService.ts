@@ -23,13 +23,13 @@ export default class AuthService {
         this.data = props;
         this.user = null;
         this.msalObj = new UserAgentApplication(props.config);
-        this.msalObj.handleRedirectCallback(
-            (token) => {
-               this.user = this.msalObj.getAccount();
-            },
-            (error) => {
-                console.error(error);
-            });
+        // this.msalObj.handleRedirectCallback(
+        //     (token) => {
+        //        this.user = this.msalObj.getAccount();
+        //     },
+        //     (error) => {
+        //         console.error(error);
+        //     });
     }
 
     // public async acquireTokenSilentThenPopup(): Promise<AuthResponse | null> {
