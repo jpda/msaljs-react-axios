@@ -2,7 +2,15 @@
 
 Example usage of msaljs in react in various scenarios.
 
-//todo: this
+## todo
+
+- setup backend test service on new domain
+- genericize data? eh
+- multitenant for an always-on demo?
+- clean up extra &amp; dead code
+- resolve group GUIDs via graph
+- setup approles &amp; show them in claims
+
 
 ## Structure
 
@@ -15,8 +23,3 @@ Each component is a view, essentially, that reflects a specific scenario:
 - Group claim data shows your groups after `groupMembershipClaims` is added to the registration manifest
 - AppRole shows your app roles after configuration &amp; assignment in Azure AD
 - [ClaimsView](src/components/claims/ClaimsView.tsx) shows your `id_token`
-
-## todo
-
-- clean up structure
-- add detail to views - remove additional menu boxes/items
