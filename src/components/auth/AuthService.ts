@@ -1,4 +1,4 @@
-import { UserAgentApplication, Account, AuthResponse } from "msal";
+import { UserAgentApplication, Account } from "msal";
 
 interface Props {
     config: {
@@ -12,57 +12,51 @@ interface Props {
         }
     }
     requestConfig: { scopes: string[] }
-    apiConfig: { apiEndpoint: string }
 }
 
 export default class AuthService {
     data: Props;
     msalObj: UserAgentApplication;
     user: Account | null;
-    userData: string;
 
     constructor(props: Props) {
         this.data = props;
+        this.user = null;
         this.msalObj = new UserAgentApplication(props.config);
         this.msalObj.handleRedirectCallback(
-            (error: any, response: any) => {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log("received response, token: " + response.tokenType);
-                    this.userData = response.idToken.name;
-                }
-            }
-        );
-        this.userData = "loading";
-        this.user = null;
+            (token) => {
+               this.user = this.msalObj.getAccount();
+            },
+            (error) => {
+                console.error(error);
+            });
     }
 
-    public async acquireTokenSilentThenPopup(): Promise<AuthResponse | null> {
-        if(this.msalObj.getAccount()){
-            return this.msalObj.acquireTokenSilent(this.data.requestConfig).then(tokenResponse => {
-                return tokenResponse;
-            }).catch(
-                e => {
-                    console.error(e);
-                    console.error(e.errorCode);
-                    if (e.errorCode === "user_login_error") {
-                        this.signIn();
-                    }
-                    if (this.requiresInteraction(e.errorCode)) {
-                        console.warn("should redirect?");
-                        this.msalObj.acquireTokenPopup(this.data.requestConfig).then(response => {
-                            return response;
-                        });
-                    }
-                    return null;
-                }
-            );
-        } else {
-            this.signIn();
-        }
-        return null;
-    }
+    // public async acquireTokenSilentThenPopup(): Promise<AuthResponse | null> {
+    //     if (this.msalObj.getAccount()) {
+    //         return this.msalObj.acquireTokenSilent(this.data.requestConfig).then(tokenResponse => {
+    //             return tokenResponse;
+    //         }).catch(
+    //             e => {
+    //                 console.error(e);
+    //                 console.error(e.errorCode);
+    //                 if (e.errorCode === "user_login_error") {
+    //                     this.login();
+    //                 }
+    //                 if (this.requiresInteraction(e.errorCode)) {
+    //                     console.warn("requires interactive login");
+    //                     this.msalObj.acquireTokenPopup(this.data.requestConfig).then(response => {
+    //                         return response;
+    //                     });
+    //                 }
+    //                 return null;
+    //             }
+    //         );
+    //     } else {
+    //         this.login();
+    //     }
+    //     return null;
+    // }
 
     public requiresInteraction(errorCode: string): boolean {
         console.error(errorCode);
@@ -74,8 +68,8 @@ export default class AuthService {
             errorCode === "login_required";
     }
 
-    public async signIn(): Promise<Account | null> {
-       return this.msalObj.loginPopup(this.data.requestConfig).then(
+    public async login(): Promise<Account | null> {
+        return this.msalObj.loginPopup(this.data.requestConfig).then(
             response => {
                 var user = this.msalObj.getAccount();
                 if (user) {
@@ -88,5 +82,9 @@ export default class AuthService {
                 console.log(error);
                 return null;
             });
+    }
+
+    public logout() {
+        this.msalObj.logout();
     }
 }

@@ -8,10 +8,13 @@ import { Card, CardDeck } from "react-bootstrap";
 
 interface Props {
     auth: AuthService
+    toastToggle: any;
 }
 
 interface State {
     userInfo: IKvp[]
+    authToastOpen: boolean;
+    message: string;
 }
 
 export class GraphView extends React.Component<Props, State> {
@@ -20,9 +23,9 @@ export class GraphView extends React.Component<Props, State> {
     scopeConfiguration: AuthenticationParameters; // required scopes for this page
 
     constructor(props: Props, state: State) {
-        super(props);
+        super(props, state);
         this.auth = props.auth;
-        this.state = { userInfo: [] };
+        this.state = { userInfo: [], authToastOpen: false, message: "" };
         // here we set the scopes we'll need to request from the user
         this.scopeConfiguration = { scopes: ["https://graph.microsoft.com/User.Read"] };
         this.state.userInfo.push(new Kvp("loading...", "loading..."));
@@ -40,14 +43,21 @@ export class GraphView extends React.Component<Props, State> {
         }
     }
 
+    showError(e: any) {
+        this.props.toastToggle(true, e.errorCode);
+        setTimeout(() => {
+            this.props.toastToggle(false, e.errorCode);
+        }, 5000);
+    }
+
     tokenError(e: any) {
         console.error(e);
         console.error(e.errorCode);
         if (e.errorCode === "user_login_error") {
-            this.auth.msalObj.loginPopup(this.scopeConfiguration).then(token => { this.idTokenCallback(token) });
+            this.auth.msalObj.loginPopup(this.scopeConfiguration).then(token => { this.idTokenCallback(token) }).catch(e => { this.showError(e) });
         }
         if (this.auth.requiresInteraction(e.errorCode)) {
-            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration).then(this.fetchData);
+            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration).then(this.fetchData).catch(this.showError).catch(e => { this.showError(e) });;
         }
     }
 
@@ -92,7 +102,7 @@ export class GraphView extends React.Component<Props, State> {
                 <Row>
                     <CardDeck style={{ width: '100%' }}>
                         <Card>
-                        <Card.Header as="h5">Single scope, statically assigned</Card.Header>
+                            <Card.Header as="h5">Single scope, statically assigned</Card.Header>
                             <Card.Body>
                                 <p>In this example, the requested scopes are assigned in the application registration, before the application
                                     ever runs. This is an administrative Azure AD activity, where the owner of the app registration
@@ -130,7 +140,7 @@ export class GraphView extends React.Component<Props, State> {
                     </CardDeck>
                 </Row>
                 <Row>
-                    <h2>Graph data for /me</h2>
+                    <h2>Microsoft Graph data for /me</h2>
                 </Row>
                 <Row>
                     <Table bordered striped>

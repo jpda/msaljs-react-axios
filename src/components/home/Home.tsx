@@ -1,6 +1,5 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
-import CardDeck from "react-bootstrap/CardDeck";
 import { LinkContainer } from 'react-router-bootstrap';
 import Row from "react-bootstrap/Row";
 import { Button, Collapse, CardGroup } from "react-bootstrap";
@@ -17,7 +16,7 @@ export default class Home extends React.Component<State> {
         this.state = { open: true };
     }
 
-    setCollapsedState(val: boolean) {
+    setCollapsedState() {
         this.setState({ open: !this.state.open });
     }
 
@@ -25,7 +24,7 @@ export default class Home extends React.Component<State> {
         return (
             <>
                 <Row>
-                    <Button onClick={() => this.setCollapsedState(!this.state.open)}
+                    <Button onClick={() => this.setCollapsedState()}
                         aria-controls="example-collapse-text"
                         aria-expanded={this.state.open}>{this.state.open ? "Hide options" : "Show options"}</Button>
                 </Row>

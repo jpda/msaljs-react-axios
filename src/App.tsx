@@ -9,13 +9,20 @@ import Home from "./components/home/Home";
 import { PowerView } from "./components/power/PowerView";
 import { GraphView } from "./components/graph/GraphView";
 import AuthService from "./components/auth/AuthService";
+import { Toast } from "react-bootstrap";
 
-class App extends Component<{}> {
+interface State {
+  show: boolean;
+  message: string;
+}
+
+class App extends Component<any, State> {
   endpoint: string;
   msalConfig: any;
   auth: AuthService;
+  toastHandler: (s: boolean, m: string) => void;
 
-  constructor(p: any, s: any) {
+  constructor(p: any, s: State) {
     super(p, s);
     this.endpoint = "https://remoteutils.azurewebsites.net/api";
     this.msalConfig = {
@@ -40,10 +47,13 @@ class App extends Component<{}> {
       apiConfig: { apiEndpoint: this.endpoint }
     }
     this.auth = new AuthService(this.msalConfig);
-    this.state = {
-      userInfo: null,
-      loginFailed: false
+    // this.toastHandler.bind(this);
+    this.state = { show: false, message: "" };
+
+    this.toastHandler = (s: boolean, m: string) => {
+      this.setState({ show: s, message: m });
     };
+
   }
 
   render() {
@@ -51,12 +61,26 @@ class App extends Component<{}> {
       <Router>
         <div>
           <MainMenuNav AuthService={this.auth} />
+          <div style={{ position: 'absolute', top: 15, right: 15, }}>
+            <Toast show={this.state.show}>
+              <Toast.Header>
+                <img
+                  src="holder.js/20x20?text=%20"
+                  className="rounded mr-2"
+                  alt=""
+                />
+                <strong className="mr-auto">Authentication error</strong>
+                <small>Now</small>
+              </Toast.Header>
+              <Toast.Body>{this.state.message}</Toast.Body>
+            </Toast>
+          </div>
           <Container>
             <Route Path="/" component={Home} />
             <Switch>
-              <Route path="/graph" render={(props) => <GraphView {...props} auth={this.auth} />} />
+              <Route path="/graph" render={(props) => <GraphView {...props} auth={this.auth} toastToggle={this.toastHandler} />} />
               <Route path="/power" render={(props) => <PowerView {...props} devices={[]} endpoint={this.endpoint} auth={this.auth} />} />
-              <Route path="/static" render={(props) => <GraphView {...props} auth={this.auth} />} />
+              <Route path="/static" render={(props) => <GraphView {...props} auth={this.auth} toastToggle={this.toastHandler} />} />
               <Route path="/jit" render={(props) => <ClaimsView {...props} auth={this.auth} />} />
               <Route path="/incremental" render={(props) => <ClaimsView {...props} auth={this.auth} />} />
               <Route path="/groups" render={(props) => <ClaimsView {...props} auth={this.auth} />} />
@@ -64,7 +88,7 @@ class App extends Component<{}> {
             </Switch>
           </Container>
         </div>
-      </Router>
+      </Router >
     );
   }
 }
