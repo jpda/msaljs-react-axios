@@ -44,8 +44,7 @@ export class GraphView extends React.Component<Props, State> {
     }
 
     showError(e: any) {
-        this.props.toastToggle(true, e.errorCode);
- 
+        this.props.toastToggle(true, e);
     }
 
     tokenError(e: any) {
@@ -98,7 +97,7 @@ export class GraphView extends React.Component<Props, State> {
         return (
             <>
                 <Row>
-                    <CardDeck style={{ width: '100%' }}>
+                    <CardDeck>
                         <Card>
                             <Card.Header as="h5">Single scope, statically assigned</Card.Header>
                             <Card.Body>
@@ -107,7 +106,7 @@ export class GraphView extends React.Component<Props, State> {
                                     determines which scopes/permissions are required and enables the application to request them.
                                     This is how Azure AD v1 resource permissions were handled.
                                 </p>
-                                <CardDeck style={{ width: '100%' }}>
+                                <CardDeck>
                                     <Card>
                                         <Card.Body>
                                             <Card.Title>API/Service</Card.Title>
