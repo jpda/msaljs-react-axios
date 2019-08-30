@@ -47,13 +47,14 @@ class App extends Component<any, State> {
       apiConfig: { apiEndpoint: this.endpoint }
     }
     this.auth = new AuthService(this.msalConfig);
-    // this.toastHandler.bind(this);
     this.state = { show: false, message: "" };
 
     this.toastHandler = (s: boolean, m: string) => {
       this.setState({ show: s, message: m });
+      setTimeout(() => {
+        this.setState({ show: !s, message: m });
+      }, 10000);
     };
-
   }
 
   render() {
@@ -61,14 +62,10 @@ class App extends Component<any, State> {
       <Router>
         <div>
           <MainMenuNav AuthService={this.auth} />
-          <div style={{ position: 'absolute', top: 15, right: 15, }}>
-            <Toast show={this.state.show}>
+          <div style={{ position: 'absolute', top: 15, right: 15, minWidth: '24rem' }}>
+            <Toast show={this.state.show} onClose={() => { this.toastHandler(false, "") }}>
               <Toast.Header>
-                <img
-                  src="holder.js/20x20?text=%20"
-                  className="rounded mr-2"
-                  alt=""
-                />
+                <img src="//via.placeholder.com/20" className="rounded mr-2" alt="" />
                 <strong className="mr-auto">Authentication error</strong>
                 <small>Now</small>
               </Toast.Header>

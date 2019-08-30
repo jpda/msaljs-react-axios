@@ -45,9 +45,7 @@ export class GraphView extends React.Component<Props, State> {
 
     showError(e: any) {
         this.props.toastToggle(true, e.errorCode);
-        setTimeout(() => {
-            this.props.toastToggle(false, e.errorCode);
-        }, 5000);
+ 
     }
 
     tokenError(e: any) {
