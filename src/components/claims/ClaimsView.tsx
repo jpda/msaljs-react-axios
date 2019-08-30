@@ -35,6 +35,7 @@ export default class ClaimsView extends React.Component<Props, State> {
         this.handleData();
     }
 
+    //todo: add toggle between id_token and access_tokens
     handleData() {
         if (this.auth.msalObj.getAccount()) {
             this.parseToken(this.auth.msalObj.getAccount().idToken);

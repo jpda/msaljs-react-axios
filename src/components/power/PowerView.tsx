@@ -4,6 +4,7 @@ import Table from "react-bootstrap/Table";
 import Row from "react-bootstrap/Row";
 import AuthService from "../auth/AuthService";
 import { AuthResponse, AuthenticationParameters } from "msal";
+import { CardDeck, Card } from "react-bootstrap";
 
 interface Props {
     endpoint: any
@@ -87,23 +88,64 @@ export class PowerView extends React.Component<Props, State> {
 
     render() {
         return (
-            <Row>
-                <Table bordered striped>
-                    <thead><tr><th>Device</th><th>Name</th><th>Power</th><th>Energy</th></tr></thead>
-                    <tbody>
-                        {
-                            this.state.devices.map((x, i) => {
-                                return <tr key={i}>
-                                    <td>{x.label}</td>
-                                    <td>{x.name}</td>
-                                    <td>{x.state.powerMeterInW} W</td>
-                                    <td>{x.state.energyMeterInkWh} kWh</td>
-                                </tr>
-                            })
-                        }
-                    </tbody>
-                </Table>
-            </Row>
+            <>
+                <Row>
+                    <CardDeck>
+                        <Card>
+                            <Card.Header as="h5">Two scopes, dynamically requested</Card.Header>
+                            <Card.Body>
+                                <p>
+                                    In this example, the requested scopes are not assigned in the application registration, but requested when needed. Requesting scopes dynamically can be very useful for apps which need a sensitive permission but only for specific users or scenarios,
+                                    or for a specific feature which a user can choose to not use if the permission is seen as too broad.
+                                </p>
+                                <CardDeck>
+                                    <Card>
+                                        <Card.Body>
+                                            <Card.Title>API/Service</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">Your API (sample placeholder) <code>api://remote.jpda.app</code></Card.Subtitle>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card>
+                                        <Card.Body>
+                                            <Card.Title>Permission</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">wol<br/>power</Card.Subtitle>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card >
+                                        <Card.Body>
+                                            <Card.Title>Scope</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted"><code>api://remote.jpda.app/wol</code><br/><code>api://remote.jpda.app/power</code></Card.Subtitle>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card >
+                                        <Card.Body>
+                                            <Card.Title>Assignment</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">Dynamic</Card.Subtitle>
+                                        </Card.Body>
+                                    </Card>
+                                </CardDeck>
+                            </Card.Body>
+                        </Card>
+                    </CardDeck>
+                </Row>
+                <Row>
+                    <Table bordered striped>
+                        <thead><tr><th>Device</th><th>Name</th><th>Power</th><th>Energy</th></tr></thead>
+                        <tbody>
+                            {
+                                this.state.devices.map((x, i) => {
+                                    return <tr key={i}>
+                                        <td>{x.label}</td>
+                                        <td>{x.name}</td>
+                                        <td>{x.state.powerMeterInW} W</td>
+                                        <td>{x.state.energyMeterInkWh} kWh</td>
+                                    </tr>
+                                })
+                            }
+                        </tbody>
+                    </Table>
+                </Row>
+            </>
         );
     }
 }
