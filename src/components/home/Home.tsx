@@ -88,7 +88,7 @@ export default class Home extends React.Component<State> {
                                     <Card.Title>AppRole claim data</Card.Title>
                                     <Card.Subtitle className="mb-2 text-muted">View user's role data</Card.Subtitle>
                                     <Card.Text>
-                                        Shows AppRole data included in claims for making authorization decisions.
+                                        Shows AppRole data included in claims for making authorization decisions. 
                     </Card.Text>
                                 </Card.Body>
                                 <Card.Body>

@@ -18,54 +18,62 @@ interface State {
 export class GraphView extends React.Component<Props, State> {
     state: State;
     auth: AuthService;
-    scopeConfiguration: AuthenticationParameters; // required scopes for this page
+    scopeConfiguration: AuthenticationParameters;
 
     constructor(props: Props, state: State) {
         super(props, state);
         this.auth = props.auth;
-        this.state = { userInfo: [] };
-        // here we set the scopes we'll need to request from the user
+        this.state = { userInfo: [new Kvp("loading...", "loading...")] };
+
+        // here we set the scopes we'll need to request from the user for this view
         this.scopeConfiguration = { scopes: ["https://graph.microsoft.com/User.Read"] };
-        this.state.userInfo.push(new Kvp("loading...", "loading..."));
     }
 
     componentDidMount() {
-        this.handleData();
-    }
-
-    handleData() {
-        if (this.auth.msalObj.getAccount()) {
-            this.auth.msalObj.acquireTokenSilent(this.scopeConfiguration).then(token => { this.fetchData(token) }).catch(e => { this.tokenError(e) });
+        if (this.auth.msalObj.getAccount()) { // account is available, so we're signed in
+            this.auth.msalObj.acquireTokenSilent(this.scopeConfiguration)
+                .then(t => this.fetchData(t))
+                .catch(e => this.tokenError(e));
         } else {
-            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration).then(token => { this.fetchData(token) }).catch(e => { this.tokenError(e) });
+            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration)
+                .then(t => this.fetchData(t))
+                .catch(e => this.tokenError(e));
         }
-    }
-
-    showError(e: any) {
-        this.props.toastToggle(true, e.errorCode);
     }
 
     tokenError(e: any) {
         console.error(e);
         console.error(e.errorCode);
-        if (e.errorCode === "user_login_error") {
-            this.auth.msalObj.loginPopup(this.scopeConfiguration).then(token => { this.idTokenCallback(token) }).catch(e => { this.showError(e) });
+        if (e.errorCode === "user_login_error") { // e.g., the user hasn't logged in yet, so we need to log them in
+            this.auth.msalObj.loginPopup(this.scopeConfiguration)
+                .then(response => { // don't really need the response here, but if you wanted an id_token for some reason it would be available
+                    this.auth.msalObj.acquireTokenSilent(this.scopeConfiguration)
+                        .then(t => this.fetchData(t))
+                        .catch(e => this.tokenError(e));
+                })
+                .catch(e => this.handleFatalError(e)); // some other error that we can't handle
         }
-        if (this.auth.requiresInteraction(e.errorCode)) {
-            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration).then(this.fetchData).catch(this.showError).catch(e => { this.showError(e) });;
+        if (this.auth.requiresInteraction(e.errorCode)) { // this usually means the user needs to consent or use MFA - things that require an interactive login
+            this.auth.msalObj.acquireTokenPopup(this.scopeConfiguration)
+                .then(t => this.fetchData(t))
+                .catch(e => this.handleFatalError(e));
         }
     }
 
-    idTokenCallback(token: AuthResponse) {
-        this.auth.msalObj.acquireTokenSilent(this.scopeConfiguration).then(token => { this.fetchData(token) }).catch(e => { this.tokenError(e) });
+    handleFatalError(e: any) {
+        console.error(e.errorCode);
+        this.props.toastToggle(true, e.errorCode);
+        this.setState({ userInfo: [new Kvp("Something went wrong", e.errorCode)] });
     }
 
     fetchData(token: AuthResponse) {
-        if (!token) { console.warn("AuthResponse null"); return; };
-        console.debug(token.tokenType);
+        if (!token) {
+            this.handleFatalError({ errorCode: "no_token" });
+            return;
+        };
 
         if (token.tokenType !== "access_token" || token.accessToken === null) {
-            console.warn("got wrong token type");
+            this.handleFatalError({ errorCode: "wrong_token_type" });
         }
 
         console.debug("graphview: got access token: " + token.accessToken.substr(0, 10) + "...");
@@ -83,7 +91,9 @@ export class GraphView extends React.Component<Props, State> {
     }
 
     parseGraphResponse(data: any) {
-        if (data === null) return;
+        if (data === null) {
+            this.handleFatalError({ errorCode: "no_graph_response" });
+        };
         console.debug(data);
         var userData = Object.keys(data).filter(x => data[x] != null).map(x => {
             return new Kvp(x, Array.isArray(data[x]) ? data[x].join() : data[x].toString());
