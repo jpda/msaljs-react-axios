@@ -11,7 +11,6 @@ Example usage of msaljs in react in various scenarios.
 - resolve group GUIDs via graph
 - setup approles &amp; show them in claims
 
-
 ## Structure
 
 Each component is a view, essentially, that reflects a specific scenario:
