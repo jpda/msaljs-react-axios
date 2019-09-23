@@ -15,10 +15,6 @@ namespace Func
         public override void Configure(IFunctionsHostBuilder builder)
         {
             var config = new ConfigurationBuilder().SetBasePath(Environment.CurrentDirectory).AddJsonFile("local.settings.json", optional: true).AddEnvironmentVariables().Build();
-
-            builder.Services.AddLogging(x=> {
-                
-            });
             builder.Services.AddSingleton(new HttpClient());
             builder.Services.AddSingleton<IConfidentialClientApplication>(x =>
             {
@@ -26,6 +22,7 @@ namespace Func
             });
 
             builder.Services.Configure<SmartThingsApiConfiguration>(config.GetSection("SmartThingsApiConfiguration"));
+            builder.Services.Configure<OboApiConfiguration>(config.GetSection("OboApiConfiguration"));
             builder.Services.AddSingleton<IPowerServiceProvider, SmartThingsServiceProvider>();
 
         }

@@ -9,6 +9,8 @@ using Microsoft.Identity.Client;
 using System.Net.Http;
 
 using Func;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 
@@ -16,30 +18,32 @@ namespace Func
 {
     public class OboWhoApi
     {
-        private const string ApiUrl = "https://aad-func.azurewebsites.net/api/who";
+        private readonly string _apiUrl;
+        private readonly List<string> _scopes;
         private readonly IConfidentialClientApplication _aadApp;
         private readonly ILogger<OboWhoApi> _log;
         private readonly HttpClient _httpClient;
-        public OboWhoApi(IConfidentialClientApplication app, HttpClient client, ILoggerFactory logFactory)
+        public OboWhoApi(IConfidentialClientApplication app, HttpClient client, ILogger<OboWhoApi> log, IOptions<OboApiConfiguration> opts)
         {
-            _log = logFactory.CreateLogger<OboWhoApi>();
+            _log = log;
             _aadApp = app;
             _httpClient = client;
+            _apiUrl = opts.Value.EndpointUrl;
         }
 
         [FunctionName("who-api")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req, ILogger log)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
         {
             var accessTokenForThis = req.Headers["Authorization"].ToString().Split(" ")[1];
             
-            log.LogInformation("Got access token from header, using that in assertion");
-            log.LogInformation(accessTokenForThis);
-            var tokenRequest = _aadApp.AcquireTokenOnBehalfOf(new[] { "https://aad-func.azurewebsites.net/user_impersonation" }, new UserAssertion(accessTokenForThis));
+            _log.LogInformation("Got access token from header, using that in assertion");
+            _log.LogInformation(accessTokenForThis);
+            var tokenRequest = _aadApp.AcquireTokenOnBehalfOf(_scopes, new UserAssertion(accessTokenForThis));
             var token = await tokenRequest.ExecuteAsync();
-            log.LogInformation($"Got new access token obo: {token.AccessToken}");
+            _log.LogInformation($"Got new access token obo: {token.AccessToken}");
             
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
-            var ping = await _httpClient.GetAsync(ApiUrl);
+            var ping = await _httpClient.GetAsync(_apiUrl);
 
             if (ping.IsSuccessStatusCode)
             {

@@ -14,19 +14,20 @@ namespace Func
 {
     public class Power
     {
-        private IPowerServiceProvider _provider;
-        //private ILogger<Power> _log;
+        private readonly IPowerServiceProvider _provider;
+        private readonly ILogger<Power> _log;
 
-        public Power(IPowerServiceProvider provider)//, ILogger<Power> log)
+        public Power(IPowerServiceProvider provider, ILogger<Power> log)
         {
             _provider = provider;
-            //_log = log;
+            _log = log;
         }
 
         [FunctionName("power")]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
         {
             var devices = await _provider.GetDevicesWithCapabilitiesAsync("powerMeter", "energyMeter");
+            _log.LogInformation($"Called provider API");
             return new OkObjectResult(devices);
         }
     }
