@@ -29,19 +29,19 @@ namespace Func
             _aadApp = app;
             _httpClient = client;
             _apiUrl = opts.Value.EndpointUrl;
+            _scopes = opts.Value.Scopes;
         }
 
         [FunctionName("who-api")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req, ILogger log)
         {
             var accessTokenForThis = req.Headers["Authorization"].ToString().Split(" ")[1];
-            
-            _log.LogInformation("Got access token from header, using that in assertion");
-            _log.LogInformation(accessTokenForThis);
+            _log.LogTrace("Got access token from header, using that in assertion");
+            _log.LogTrace(accessTokenForThis);
             var tokenRequest = _aadApp.AcquireTokenOnBehalfOf(_scopes, new UserAssertion(accessTokenForThis));
             var token = await tokenRequest.ExecuteAsync();
-            _log.LogInformation($"Got new access token obo: {token.AccessToken}");
-            
+            _log.LogTrace($"Got new access token obo: {token.AccessToken}");
+
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
             var ping = await _httpClient.GetAsync(_apiUrl);
 

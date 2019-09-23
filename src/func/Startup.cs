@@ -18,7 +18,12 @@ namespace Func
             builder.Services.AddSingleton(new HttpClient());
             builder.Services.AddSingleton<IConfidentialClientApplication>(x =>
             {
-                return ConfidentialClientApplicationBuilder.Create(config["AzureAd:ClientId"]).WithClientSecret(config["AzureAd:ClientSecret"]).WithAuthority(config["AzureAd:Authority"]).WithTenantId(config["AzureAd:TenantId"]).Build();
+                return ConfidentialClientApplicationBuilder
+                .Create(config["AzureAd:ClientId"])
+                .WithClientSecret(config["AzureAd:ClientSecret"])
+                .WithAuthority(config["AzureAd:Authority"])
+                .WithTenantId(config["AzureAd:TenantId"])
+                .Build();
             });
 
             builder.Services.Configure<SmartThingsApiConfiguration>(config.GetSection("SmartThingsApiConfiguration"));
