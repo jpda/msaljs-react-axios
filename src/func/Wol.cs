@@ -17,9 +17,10 @@ namespace Func
         [FunctionName("wol")]
         public static IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req, ILogger log)
         {
-            var servers = new List<WakeOnLanServer>();
-            servers.Add(new WakeOnLanServer("server01", "40:16:7e:6a:1f:f6"));
-            servers.Add(new WakeOnLanServer("jpda-x8930", "D8:9E:F3:98:1B:08"));
+            var servers = new List<WakeOnLanServer>() {
+                new WakeOnLanServer("server01", "40:16:7e:6a:1f:f6"),
+                new WakeOnLanServer("jpda-x8930", "D8:9E:F3:98:1B:08")
+            };
             return new OkObjectResult(servers);
         }
     }
