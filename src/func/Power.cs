@@ -27,7 +27,7 @@ namespace Func
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
         {
             var devices = await _provider.GetDevicesWithCapabilitiesAsync("powerMeter", "energyMeter");
-            _log.LogInformation($"Called provider API");
+            _log.LogInformation($"Called smartthings API");
             return new OkObjectResult(devices);
         }
     }

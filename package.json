@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && az storage blob delete-batch -s '$web' --account-name msaljs --pattern '*' && az storage blob upload-batch -s 'build/' -d \\$web --account-name msaljs --output none",
+    "build": "react-scripts build && az storage blob delete-batch -s \"$web\" --account-name msaljs --pattern \"*\" && az storage blob upload-batch -s \"build/\" -d \"$web\" --account-name msaljs --output none",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

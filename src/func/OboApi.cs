@@ -19,7 +19,7 @@ namespace Func
     public class OboWhoApi
     {
         private readonly string _apiUrl;
-        private readonly List<string> _scopes;
+        private readonly string _scopes;
         private readonly IConfidentialClientApplication _aadApp;
         private readonly ILogger<OboWhoApi> _log;
         private readonly HttpClient _httpClient;
@@ -33,12 +33,12 @@ namespace Func
         }
 
         [FunctionName("who-api")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req, ILogger log)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
         {
             var accessTokenForThis = req.Headers["Authorization"].ToString().Split(" ")[1];
             _log.LogTrace("Got access token from header, using that in assertion");
             _log.LogTrace(accessTokenForThis);
-            var tokenRequest = _aadApp.AcquireTokenOnBehalfOf(_scopes, new UserAssertion(accessTokenForThis));
+            var tokenRequest = _aadApp.AcquireTokenOnBehalfOf(_scopes.Split(" "), new UserAssertion(accessTokenForThis));
             var token = await tokenRequest.ExecuteAsync();
             _log.LogTrace($"Got new access token obo: {token.AccessToken}");
 
