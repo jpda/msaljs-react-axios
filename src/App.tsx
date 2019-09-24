@@ -73,16 +73,6 @@ class App extends Component<any, State> {
       <Router>
         <div>
           <MainMenuNav AuthService={this.auth} userName={this.state.userName} key={this.state.userName} authenticationStateChanged={this.authenticationStateChanged} />
-          <div style={{ position: 'absolute', top: 15, right: 15, minWidth: '24rem' }}>
-            <Toast show={this.state.toastShow} onClose={() => { this.toastHandler(false, "") }}>
-              <Toast.Header>
-                <img src="//via.placeholder.com/20" className="rounded mr-2" alt="" />
-                <strong className="mr-auto">Authentication error</strong>
-                <small>Now</small>
-              </Toast.Header>
-              <Toast.Body>{this.state.toastMessage}</Toast.Body>
-            </Toast>
-          </div>
           <Container>
             <Route Path="/" component={Home} />
             <Switch>
@@ -94,6 +84,16 @@ class App extends Component<any, State> {
               <Route path="/claims" render={(props) => <ClaimsView {...props} auth={this.auth} toastToggle={this.toastHandler} />} />
             </Switch>
           </Container>
+          <div style={{ position: 'absolute', top: 45, right: 15, minWidth: '24rem', zIndex: -1 }}>
+            <Toast show={this.state.toastShow} onClose={() => { this.toastHandler(false, "") }}>
+              <Toast.Header>
+                <img src="//via.placeholder.com/20" className="rounded mr-2" alt="" />
+                <strong className="mr-auto">Authentication error</strong>
+                <small>Now</small>
+              </Toast.Header>
+              <Toast.Body>{this.state.toastMessage}</Toast.Body>
+            </Toast>
+          </div>
         </div>
       </Router >
     );

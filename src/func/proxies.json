@@ -15,7 +15,7 @@
                 "route": "/{*restOfPath}"
             },
             "debug": false,
-            "backendUri": "https://remoteutils.z13.web.core.windows.net/{restOfPath}"
+            "backendUri": "https://msaljs.z13.web.core.windows.net/{restOfPath}"
         }
     }
 }
