@@ -27,7 +27,7 @@ class App extends Component<any, State> {
 
   constructor(p: any, s: State) {
     super(p, s);
-    this.endpoint = "https://remoteutils.azurewebsites.net/api";
+    this.endpoint = "https://msaljs.jpda.app/api";
     this.msalConfig = {
       config: {
         auth: {
@@ -39,14 +39,14 @@ class App extends Component<any, State> {
           cacheLocation: "sessionStorage" // session storage is more secure, but prevents single-sign-on from working. other option is 'localStorage'
         },
         protectedResourceMap: [
-          ['https://remoteutils.azurewebsites.net/api/power', ["api://remote.jpda.app/power", "api://remote.jpda.app/wake"]],
-          ['https://remoteutils.azurewebsites.net/api/wol', ["api://remote.jpda.app/power", "api://remote.jpda.app/wake"]],
+          ['https://msaljs.jpda.app/api', ["api://msaljs.jpda.app/power", "api://msaljs.jpda.app/wake"]],
+          ['https://msaljs.jpda.app/api', ["api://msaljs.jpda.app/power", "api://msaljs.jpda.app/wake"]],
           ['https://graph.microsoft.com/v1.0/me', ['https://graph.microsoft.com/User.Read']],
           ['https://graph.microsoft.com/v1.0/me/calendarview', ['https://graph.microsoft.com/Calendar.Read']],
         ]
       },
       requestConfig: {
-        scopes: ["https://graph.microsoft.com/User.Read"] // static scopes
+        scopes: ["/.default"] // static scopes
       },
       apiConfig: { apiEndpoint: this.endpoint }
     }
