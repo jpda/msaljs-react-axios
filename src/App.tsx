@@ -46,7 +46,7 @@ class App extends Component<any, State> {
         ]
       },
       requestConfig: {
-        scopes: ["/.default"] // static scopes
+        scopes: ["api://msaljs.jpda.app/.default"] // static scopes
       },
       apiConfig: { apiEndpoint: this.endpoint }
     }

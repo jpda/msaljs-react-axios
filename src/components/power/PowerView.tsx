@@ -30,7 +30,7 @@ export class PowerView extends React.Component<Props, State> {
         this.state = { devices: [new Device("loading...", "loading...", "loading...", new DeviceState(0, 0))] };
 
         // here we set the scopes we'll need to request from the user for this view
-        this.scopeConfiguration = { scopes: ["api://remote.jpda.app/power", "api://remote.jpda.app/wake"] };
+        this.scopeConfiguration = { scopes: ["api://msaljs.jpda.app/power", "api://msaljs.jpda.app/wake"] };
     }
 
     componentDidMount() {
@@ -114,7 +114,7 @@ export class PowerView extends React.Component<Props, State> {
                                     <Card>
                                         <Card.Body>
                                             <Card.Title>API/Service</Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted">Your API (sample placeholder) <br /><code>api://remote.jpda.app</code></Card.Subtitle>
+                                            <Card.Subtitle className="mb-2 text-muted">Your API (sample placeholder) <br /><code>api://msaljs.jpda.app</code></Card.Subtitle>
                                         </Card.Body>
                                     </Card>
                                     <Card>
@@ -126,7 +126,7 @@ export class PowerView extends React.Component<Props, State> {
                                     <Card >
                                         <Card.Body>
                                             <Card.Title>Scope</Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted"><code>api://remote.jpda.app/wol</code><br /><code>api://remote.jpda.app/power</code></Card.Subtitle>
+                                            <Card.Subtitle className="mb-2 text-muted"><code>api://msaljs.jpda.app/wol</code><br /><code>api://msaljs.jpda.app/power</code></Card.Subtitle>
                                         </Card.Body>
                                     </Card>
                                     <Card >
