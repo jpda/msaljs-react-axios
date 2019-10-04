@@ -1,0 +1,14 @@
+{
+    "routes": [
+        {
+            "http_methods": [
+                "GET",
+                "POST"
+            ],
+            "path_prefix": "/api/*",
+            "policies": {
+                "unauthenticated_action": "RejectWith401"
+            }
+        }
+    ]
+}
