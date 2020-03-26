@@ -29,4 +29,4 @@ jobs:
     - name: Azure CLI Action
       uses: Azure/cli@v1.0.0
       with:
-        inlineScript: "az storage blob delete-batch -s \"$web\" --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }} --pattern \"*\" && az storage blob upload-batch -s \"build/\" -d \"$web\" --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }} --output none"
+        inlineScript: "az storage blob delete-batch -s \"$web\" --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }} --pattern \"*\" --auth-mode login && az storage blob upload-batch -s \"build/\" -d \"$web\" --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }}  --auth-mode login --output none"
