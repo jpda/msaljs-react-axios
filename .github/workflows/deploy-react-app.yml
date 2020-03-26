@@ -1,0 +1,33 @@
+name: react-build-deploy
+on:
+  push:
+    branches: [ master ]
+    paths: './src/**'
+    paths-ignore: './src/func/**'
+env:
+  AZURE_STORAGEACCOUNT_NAME: storageaccountservia4e8
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/func'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npm run-script build
+      env:
+        CI: true
+    - name: 'Login via Azure CLI'
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Azure CLI Action
+      uses: Azure/cli@v1.0.0
+      with:
+        inlineScript: "az storage blob delete-batch -s \"$web\" --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }} --pattern \"*\" && az storage blob upload-batch -s \"build/\" -d \"$web\" --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }} --output none"
