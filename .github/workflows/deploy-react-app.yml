@@ -6,6 +6,7 @@ on:
 env:
   AZURE_STORAGEACCOUNT_NAME: storageaccountservia4e8
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/func'
+  AZURE_STORAGEACCOUNT_CONTAINER: '$web'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,4 +30,4 @@ jobs:
     - name: Azure CLI Action
       uses: Azure/cli@v1.0.0
       with:
-        inlineScript: "az storage blob delete-batch -s \"$web\" --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }} --pattern \"*\" && az storage blob upload-batch -s \"build/\" -d \"$web\" --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }} --output none"
+        inlineScript: "az storage blob delete-batch -s '${{ env.AZURE_STORAGEACCOUNT_CONTAINER }}' --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }} --pattern \"*\" --auth-mode login && az storage blob upload-batch -s \"build/\" -d '${{ env.AZURE_STORAGEACCOUNT_CONTAINER }}' --account-name ${{ env.AZURE_STORAGEACCOUNT_NAME }}  --auth-mode login --output none"
