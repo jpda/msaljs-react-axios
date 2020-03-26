@@ -2,7 +2,6 @@ name: react-build-deploy
 on:
   push:
     branches: [ master ]
-    paths: './src/**'
     paths-ignore: './src/func/**'
 env:
   AZURE_STORAGEACCOUNT_NAME: storageaccountservia4e8
