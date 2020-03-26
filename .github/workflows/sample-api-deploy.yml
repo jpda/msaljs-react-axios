@@ -1,0 +1,37 @@
+# see https://github.com/Azure/actions-workflow-samples/blob/master/FunctionApp/windows-dotnet-functionapp-on-azure-rbac.yml
+name: sample-api-deploy
+on:
+  push:
+    branches: [ master ]
+    paths: "src/func/**"
+
+env:
+  AZURE_FUNCTIONAPP_NAME: msaljs
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/func'
+  DOTNET_VERSION: '2.1.805' # dotnet 2.1 LTS
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: 'Login via Azure CLI'
+      uses: Azure/actions/login@master
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: 'Setup dotnet'
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: 'Run dotnet build'
+      shell: pwsh
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        dotnet build --configuration Release --output ./output
+        popd
+    - name: Azure Functions Action
+      uses: Azure/functions-action@v1.1.3
+      with:
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
