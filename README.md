@@ -1,6 +1,6 @@
 # msaljs-sample
 
-![sample-api-deploy](https://github.com/jpda/msaljs-sample/workflows/sample-api-deploy/badge.svg)
+![sample-api-deploy](https://github.com/jpda/msaljs-sample/workflows/sample-api-deploy/badge.svg) ![react-build-deploy](https://github.com/jpda/msaljs-sample/workflows/react-build-deploy/badge.svg)
 
 Example usage of msaljs in react in various scenarios.
 
