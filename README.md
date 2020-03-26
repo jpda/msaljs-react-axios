@@ -1,5 +1,7 @@
 # msaljs-sample
 
+![sample-api-deploy](https://github.com/jpda/msaljs-sample/workflows/sample-api-deploy/badge.svg)
+
 Example usage of msaljs in react in various scenarios.
 
 ## todo
