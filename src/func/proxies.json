@@ -15,7 +15,7 @@
                 "route": "/{*restOfPath}"
             },
             "debug": false,
-            "backendUri": "https://msaljs.z13.web.core.windows.net/{restOfPath}"
+            "backendUri": "https://storageaccountservia4e8.z13.web.core.windows.net/{restOfPath}"
         }
     }
 }
