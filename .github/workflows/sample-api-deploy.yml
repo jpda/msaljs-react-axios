@@ -6,7 +6,7 @@ on:
     paths: "src/func/**"
 
 env:
-  AZURE_FUNCTIONAPP_NAME: msaljs
+  AZURE_FUNCTIONAPP_NAME: ''
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/func'
   DOTNET_VERSION: '2.1.805' # dotnet 2.1 LTS
 

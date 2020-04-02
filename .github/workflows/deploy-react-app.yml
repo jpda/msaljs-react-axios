@@ -4,7 +4,7 @@ on:
     branches: [ master ]
     paths-ignore: './src/func/**'
 env:
-  AZURE_STORAGEACCOUNT_NAME: storageaccountservia4e8
+  AZURE_STORAGEACCOUNT_NAME: '
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/func'
   AZURE_STORAGEACCOUNT_CONTAINER: '$web'
 jobs:
