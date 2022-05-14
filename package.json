@@ -12,7 +12,7 @@
     "bootstrap": "^4.4.1",
     "core-js": "^3.6.4",
     "jwt-decoder": "0.0.0",
-    "msal": "^1.2.2",
+    "msal": "^1.4.16",
     "njwt": "^1.0.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0",
